@@ -383,18 +383,50 @@ Có thể điều chỉnh trong file `.env`.
    # Đảm bảo config/, middleware/, routes/, utils/ KHÔNG bị ignore
    ```
 
-### Debug Tools:
+## 🆘 Vercel Deployment Fixed!
 
+### **Nguyên nhân lỗi 500:**
+- API imports phức tạp (ffmpeg, filesystem operations) không tương thích với serverless
+- Duplicate route definitions gây conflict
+- Missing error handling cho missing services
+
+### **✅ Giải pháp đã áp dụng:**
+1. **📦 API Đơn giản hóa:**
+   ```bash
+   # Backup API cũ
+   api/index-backup.js   # API phức tạp (dành cho server hosting)
+   api/index.js          # API đơn giản (dành cho Vercel)
+   ```
+
+2. **🔧 Deployment Scripts mới:**
+   ```bash
+   deploy-simple.bat     # Deploy API đơn giản lên Vercel
+   test-vercel.bat       # Test API sau khi deploy
+   ```
+
+3. **⚡ Tính năng hiện tại:**
+   - ✅ Frontend documentation đẹp và responsive
+   - ✅ Health check endpoint
+   - ✅ API structure hoàn chỉnh với placeholder responses
+   - ✅ Rate limiting và error handling
+   - ✅ No crashes, stable deployment
+
+### **🚀 Deploy ngay:**
 ```bash
-# Test Facebook service riêng
-node test-facebook.js
+# Deploy API đơn giản (đảm bảo chạy được)
+deploy-simple.bat
 
-# Xem log chi tiết
-npm run dev
-
-# Check Facebook response (nếu có lỗi)
-# File facebook_debug.html sẽ được tạo tự động
+# Test sau deploy
+test-vercel.bat
 ```
+
+### **🔄 Upgrade Plan:**
+1. **Phase 1** ✅: API structure ổn định (hiện tại)
+2. **Phase 2**: Thêm Facebook service (serverless compatible)
+3. **Phase 3**: Thêm Instagram, TikTok services  
+4. **Phase 4**: Thêm SoundCloud service
+
+---
 
 ## Scripts
 
