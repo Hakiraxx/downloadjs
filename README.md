@@ -59,6 +59,36 @@ pm2 startup
 pm2 save
 ```
 
+### 5. Vercel (API-only deployment)
+```bash
+# Cài đặt Vercel CLI
+npm install -g vercel
+
+# Chuẩn bị deploy API-only
+# Windows:
+setup-vercel.bat
+
+# Linux/Mac:
+chmod +x setup-vercel.sh
+./setup-vercel.sh
+
+# Deploy lên Vercel
+vercel --prod
+
+# Sau khi deploy, restore lại package.json đầy đủ
+# Windows:
+copy package-full.json package.json
+
+# Linux/Mac:
+cp package-full.json package.json
+```
+
+**Lưu ý quan trọng cho Vercel:**
+- Vercel chỉ deploy **API backend**, không có React UI
+- Truy cập API tại: `https://your-app.vercel.app/api/endpoint`
+- Xem API documentation tại: `https://your-app.vercel.app/`
+- Framework Preset: Chọn "Other" hoặc "Node.js" (KHÔNG chọn CGI)
+
 ## 🔧 Environment Variables & Cách chạy
 
 ### 🏠 Chạy trên PC Local:
@@ -325,6 +355,33 @@ Có thể điều chỉnh trong file `.env`.
 6. **Rate Limit Hit**:
    - Đợi 15 phút trước khi thử lại
    - Hoặc thay đổi RATE_LIMIT_MAX_REQUESTS trong .env
+
+7. **Vercel Deployment Errors**:
+   
+   **ESLint errors với client code:**
+   ```bash
+   # Error: 'FaMusic' is defined but never used
+   # Solution: Đã được fix tự động, client folder được ignore hoàn toàn
+   ```
+   
+   **Build script chạy client build:**
+   ```bash
+   # Error: npm run install-client && npm run build-client
+   # Solution: Sử dụng setup-vercel.bat/.sh để switch sang API-only mode
+   ```
+   
+   **Framework Preset sai:**
+   ```bash
+   # Khi deploy Vercel:
+   # ✅ Chọn: "Other" hoặc "Node.js"  
+   # ❌ KHÔNG chọn: CGI, React, Next.js
+   ```
+   
+   **Files bị ignore:**
+   ```bash
+   # Nếu API không hoạt động, check .vercelignore
+   # Đảm bảo config/, middleware/, routes/, utils/ KHÔNG bị ignore
+   ```
 
 ### Debug Tools:
 

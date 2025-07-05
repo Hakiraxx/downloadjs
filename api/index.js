@@ -1,27 +1,106 @@
 // Vercel serverless function entry point
 const express = require('express');
-const path = require('path');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 
-// Import config and utilities
-const config = require('../config/app');
-const { securityMiddleware, corsMiddleware, rateLimitMiddleware } = require('../middleware/security');
-
-// Import routes
-const apiRoutes = require('../routes/api');
-const soundcloudRoutes = require('../routes/soundcloud');
-const proxyRoutes = require('../routes/proxy');
-const diagnosticRoutes = require('../routes/diagnostic');
+// Import services directly (avoid config dependencies)
+const facebookService = require('../services/facebookService');
+const instagramService = require('../services/instagramService');
+const tiktokVideoService = require('../services/tiktokVideoService');
+const tiktokPhotoService = require('../services/tiktokPhotoService');
+const soundcloudService = require('../services/soundcloudService');
 
 const app = express();
 
-// Apply middleware for Vercel
-app.use(corsMiddleware);
+// Simple middleware for Vercel
+app.use(helmet());
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Apply rate limiting to API routes
-app.use('/api/', rateLimitMiddleware);
+// Simple rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100,
+  message: { error: 'Too many requests, please try again later.' }
+});
+app.use('/api/', limiter);
+
+// API Routes directly embedded
+app.post('/api/facebook/download', async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+    const result = await facebookService.getVideo(url);
+    res.json(result);
+  } catch (error) {
+    console.error('Facebook download error:', error);
+    res.status(500).json({ error: error.message || 'Failed to download Facebook video' });
+  }
+});
+
+app.post('/api/instagram/download', async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+    const result = await instagramService.downloadAnyoneInInsta(url);
+    res.json(result);
+  } catch (error) {
+    console.error('Instagram download error:', error);
+    res.status(500).json({ error: error.message || 'Failed to download Instagram content' });
+  }
+});
+
+app.post('/api/tiktok/video/download', async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+    const result = await tiktokVideoService.downloadVideo(url);
+    res.json(result);
+  } catch (error) {
+    console.error('TikTok video download error:', error);
+    res.status(500).json({ error: error.message || 'Failed to download TikTok video' });
+  }
+});
+
+app.post('/api/tiktok/photo/download', async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+    const result = await tiktokPhotoService.fetchTikTokData(url);
+    res.json(result);
+  } catch (error) {
+    console.error('TikTok photo download error:', error);
+    res.status(500).json({ error: error.message || 'Failed to download TikTok photos' });
+  }
+});
+
+app.post('/api/soundcloud/info', async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+    const result = await soundcloudService.getTrackInfo(url);
+    res.json(result);
+  } catch (error) {
+    console.error('SoundCloud info error:', error);
+    res.status(500).json({ error: error.message || 'Failed to get SoundCloud track info' });
+  }
+});
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString(), platform: 'Vercel' });
+});
 
 // API Routes
 app.use('/api', apiRoutes);

@@ -10,8 +10,7 @@ import {
   FaLink,
   FaCog,
   FaImage,
-  FaVideo,
-  FaMusic
+  FaVideo
 } from 'react-icons/fa';
 import axios from 'axios';
 
