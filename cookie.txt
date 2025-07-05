@@ -1,0 +1,4 @@
+# Instagram Cookie
+# Paste your Instagram cookie here for better functionality
+# Example format: sessionid=your_session_id; csrftoken=your_csrf_token;
+dpr=1.25; mid=aGLOVgALAAGXMJiaKYgf8jFcZ2bt; datr=Vs5iaBw3G71hqvFzm9YuHjk3; ig_did=D79A7ECB-F996-42C4-8511-7D1F9D2CAF8A; ps_l=1; ps_n=1; ig_nrcb=1; fbm_124024574287414=base_domain=.instagram.com; csrftoken=A4JbBUPfBHiQF0oDgzs2aMdAKXBMEduY; ds_user_id=71633610015; wd=630x738; sessionid=71633610015%3AMPvclvkxtI8bje%3A21%3AAYeI1VP155K_7MuiLkB82ERysLi77cxdqZF6yhYLZg; rur="PRN\05471633610015\0541783232323:01fe2585c95c5ed93f3c8669d9e3dcd8e9d46987e1384cd9f2c8cf60b8d150b9d30ee608"
