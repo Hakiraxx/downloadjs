@@ -1,0 +1,6 @@
+client/
+downloads/
+*.log
+.env
+.env.*
+node_modules/.cache/
