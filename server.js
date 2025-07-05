@@ -47,15 +47,18 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-app.listen(PORT, config.host, () => {
-  console.log(`🚀 Server is running on ${config.host}:${PORT}`);
-  console.log(`📱 Environment: ${config.nodeEnv}`);
-  console.log(`🌍 Platform: ${config.environment.platform}`);
-  
-  if (config.environment.isLocal) {
-    console.log(`🔗 Local access: http://localhost:${PORT}`);
-    console.log(`🔗 Network access: http://${config.host}:${PORT}`);
-  }
-});
+// Start server only if not running on Vercel
+if (!config.environment.isHosting || !process.env.VERCEL) {
+  app.listen(PORT, config.host, () => {
+    console.log(`🚀 Server is running on ${config.host}:${PORT}`);
+    console.log(`📱 Environment: ${config.nodeEnv}`);
+    console.log(`🌍 Platform: ${config.environment.platform}`);
+    
+    if (config.environment.isLocal) {
+      console.log(`🔗 Local access: http://localhost:${PORT}`);
+      console.log(`🔗 Network access: http://${config.host}:${PORT}`);
+    }
+  });
+}
 
 module.exports = app;
