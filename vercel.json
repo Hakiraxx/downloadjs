@@ -3,13 +3,10 @@
   "builds": [
     {
       "src": "server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "client/package.json",
-      "use": "@vercel/static-build",
+      "use": "@vercel/node",
       "config": {
-        "distDir": "build"
+        "maxDuration": 30,
+        "memory": 512
       }
     }
   ],
@@ -20,15 +17,13 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/client/build/$1"
+      "dest": "/server.js"
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "VERCEL": "1"
   },
-  "functions": {
-    "server.js": {
-      "maxDuration": 30
-    }
-  }
+  "regions": ["iad1"],
+  "installCommand": "npm install && npm run build"
 }

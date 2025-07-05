@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: social-media-downloader
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RENDER
+        value: true
+    autoDeploy: true
+    disk:
+      name: social-downloader-disk
+      mountPath: /opt/render/project/src/downloads
+      sizeGB: 1
